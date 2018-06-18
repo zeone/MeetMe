@@ -43,6 +43,8 @@ namespace MeetMe
             services.AddScoped<IEventService, EventService>();
 
             //autorization
+            services.AddDbContext<RepositoryContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<User, ApplicationRole>()
                 .AddEntityFrameworkStores<RepositoryContext>()
                 .AddDefaultTokenProviders();
@@ -51,7 +53,12 @@ namespace MeetMe
             //services.AddAuthentication().AddFacebook(opt =>
             //    opt.AppId = "");
 
-
+            // Add application services.
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
 
         }
 
@@ -73,7 +80,7 @@ namespace MeetMe
             }
 
             app.UseStaticFiles();
-         //   app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
