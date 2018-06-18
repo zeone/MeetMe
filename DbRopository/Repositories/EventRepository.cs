@@ -8,7 +8,7 @@ using Models;
 
 namespace DbRepository.Repositories
 {
-  public  class EventRepository:BaseRepository,IEventRepository
+    public class EventRepository : BaseRepository, IEventRepository
     {
         public EventRepository(string connectionString, IRepositoryContextFactory contextFactory) : base(connectionString, contextFactory)
         {
@@ -20,8 +20,8 @@ namespace DbRepository.Repositories
 
             using (var context = ContextFactory.CreateDbContext(ConnectionString))
             {
-                var query = context.Events.AsQueryable();
-               
+                var query = context.Events.Include(r => r.Subcategories).Include(q => q.Creator).AsQueryable();
+
                 result = await query.Skip(index * pageSize).Take(pageSize).ToListAsync();
             }
 
@@ -33,7 +33,7 @@ namespace DbRepository.Repositories
             throw new NotImplementedException();
         }
 
-     
+
 
         public async Task AddEvent(Event post)
         {

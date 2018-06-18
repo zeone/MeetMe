@@ -9,7 +9,7 @@ namespace Models
     {
         [Key]
         public int EventId { get; set; }
-        public Guid CreatorId { get; set; }
+        public User Creator { get; set; }
         /// <summary>
         /// User's entered place
         /// </summary>
@@ -27,5 +27,6 @@ namespace Models
         public EventStatus Status { get; set; }
 
         public List<Subcategory> Subcategories { get; set; }
+        public List<UserEvents> UserEvents { get; set; }
     }
 }

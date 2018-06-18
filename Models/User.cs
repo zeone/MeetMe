@@ -9,5 +9,7 @@ namespace Models
     public class User : IdentityUser<Guid>
     {
         public int Year { get; set; }
+        public string UserLogo { get; set; }
+        public List<UserEvents> UserEvents { get; set; }
     }
 }

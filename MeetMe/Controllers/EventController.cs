@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic.DTO.Events;
 using BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +20,8 @@ namespace MeetMe.Controllers
             _eventService = _eService;
         }
         // GET: api/Event
-        [HttpGet]
-        public async Task<List<Event>> Get(int index, int pageSize)
+        [HttpGet("[action]")]
+        public async Task<List<EventViewDto>> GetAll(int index, int pageSize)
         {
             return await _eventService.GetEvents(index, pageSize);
         }
