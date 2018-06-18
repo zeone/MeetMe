@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace MeetMe.Models
+namespace Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<Guid>
     {
         public int Year { get; set; }
     }

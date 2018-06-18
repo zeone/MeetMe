@@ -2,7 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MeetMe.Models;
+using BusinessLogic.Services.Implementation;
+using BusinessLogic.Services.Interfaces;
+using DbRepository;
+using DbRepository.Factories;
+using DbRepository.Interfaces;
+using DbRepository.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +15,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
 
 namespace MeetMe
 {
@@ -25,22 +31,27 @@ namespace MeetMe
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            string dbConStr = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddMvc();
-            //db connection string
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<MeetMeContext>(options => options.UseSqlServer(connection));
+
+            services.AddScoped<IRepositoryContextFactory, RepositoryContextFactory>();
+            services.AddScoped<IEventRepository>(prov =>
+                new EventRepository(dbConStr, prov.GetService<IRepositoryContextFactory>()));
+            services.AddScoped<IUserRepository>(prov =>
+                new UserRepository(dbConStr, prov.GetService<IRepositoryContextFactory>()));
+            services.AddScoped<IEventService, EventService>();
 
             //autorization
-            services.AddIdentity<User, IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<MeetMeContext>()
+            services.AddIdentity<User, ApplicationRole>()
+                .AddEntityFrameworkStores<RepositoryContext>()
                 .AddDefaultTokenProviders();
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<MeetMeContext>();
+            //services.AddIdentity<User, ApplicationRole>()
+            //    .AddEntityFrameworkStores<RepositoryContext>();
             //services.AddAuthentication().AddFacebook(opt =>
             //    opt.AppId = "");
 
-           
+
 
         }
 
@@ -62,7 +73,7 @@ namespace MeetMe
             }
 
             app.UseStaticFiles();
-            app.UseAuthentication();
+         //   app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
