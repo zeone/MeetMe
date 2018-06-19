@@ -13,7 +13,11 @@ export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDat
         this.state = { forecasts: [], loading: true };
 
         fetch('api/SampleData/WeatherForecasts')
-            .then(response => response.json() as Promise<WeatherForecast[]>)
+            .then(response => {
+                let t = response.json() as Promise<WeatherForecast[]>;
+                console.log(t);
+                return t;
+            })
             .then(data => {
                 this.setState({ forecasts: data, loading: false });
             });

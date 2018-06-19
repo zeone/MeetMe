@@ -14,6 +14,8 @@ const registerUser = (response: any, info: any) => {
         body: JSON.stringify({
             "CustomUserInfo": {
                 "email": response.email,
+                "facebookId": response.userID,
+                "userLogo": response.picture.data.url
             },
             "SysUserInfo": info
         }),
@@ -26,7 +28,6 @@ const registerUser = (response: any, info: any) => {
     });
 }
 const responseFacebook = (response: any) => {
-    console.log(response);
     let info = {
         "LoginProvider": "Facebook",
         "ProviderKey": response.userID,
@@ -34,22 +35,30 @@ const responseFacebook = (response: any) => {
             "email": response.email
         }
     };
-    fetch('api/Account/ExternalLoginCallback', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(info),
-    }).then((resp) => {
-        console.log(resp);
-        if (resp && resp.status === 401)
-            registerUser(response, info);
-    }).then((respjson) => {
-        let r = respjson;
-    }).catch((er) => {
-        let e = er;
-    });
+    fetch('api/Account/ExternalLoginCallback',
+        {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(info),
+        }).then((resp) => {
+            if (resp && resp.status === 200) {
+                let token: jwToken;
+                resp.json().then(json => {
+                    token = json as jwToken;
+                    console.log(token);
+                });
+            }
+            else if (resp && resp.status === 401) {
+                registerUser(response, info);
+
+            } else {
+                console.log("error");
+            }
+
+        });
 }
 
 const prepareBaseSettings = () => {
@@ -101,5 +110,9 @@ export class FacebookLoginComp extends React.Component<RouteComponentProps<{}>, 
         </div>;
     }
 
+}
 
+interface jwToken {
+    access_token: string,
+    username: string
 }

@@ -11,5 +11,6 @@ namespace Models
         public int Year { get; set; }
         public string UserLogo { get; set; }
         public List<UserEvents> UserEvents { get; set; }
+        public long? FacebookId { get; set; }
     }
 }

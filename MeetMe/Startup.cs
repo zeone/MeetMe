@@ -8,6 +8,8 @@ using DbRepository;
 using DbRepository.Factories;
 using DbRepository.Interfaces;
 using DbRepository.Repositories;
+using MeetMe.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Models;
 
 namespace MeetMe
@@ -48,11 +51,21 @@ namespace MeetMe
             services.AddIdentity<User, ApplicationRole>()
                 .AddEntityFrameworkStores<RepositoryContext>()
                 .AddDefaultTokenProviders();
-            //services.AddIdentity<User, ApplicationRole>()
-            //    .AddEntityFrameworkStores<RepositoryContext>();
-            //services.AddAuthentication().AddFacebook(opt =>
-            //    opt.AppId = "");
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = AuthOptions.ISSUER,
+                        ValidAudience = AuthOptions.AUDIENCE,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
             // Add application services.
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {

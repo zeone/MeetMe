@@ -7,5 +7,8 @@ namespace BusinessLogic.DTO.Account
        
         [EmailAddress]
         public string Email { get; set; }
+
+        public string UserLogo { get; set; }
+        public long? FacebookId { get; set; }
     }
 }

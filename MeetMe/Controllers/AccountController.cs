@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BusinessLogic.DTO.Account;
+using MeetMe.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Models;
+using Newtonsoft.Json;
 
 namespace MeetMe.Controllers
 {
@@ -126,7 +130,9 @@ namespace MeetMe.Controllers
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
-                return Ok();
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                await _signInManager.SignInAsync(user, false);
+                return Ok(await Token(user));
             }
             if (result.IsLockedOut)
             {
@@ -153,7 +159,13 @@ namespace MeetMe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.CustomUserInfo.Email, Email = model.CustomUserInfo.Email };
+                var user = new User
+                {
+                    UserName = model.CustomUserInfo.Email,
+                    Email = model.CustomUserInfo.Email,
+                    UserLogo = model.CustomUserInfo.UserLogo,
+                    FacebookId = model.CustomUserInfo.FacebookId
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -161,7 +173,7 @@ namespace MeetMe.Controllers
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return Ok();
+                        return Ok(await Token(user));
                     }
                 }
                 AddErrors(result);
@@ -170,6 +182,7 @@ namespace MeetMe.Controllers
             return BadRequest(ModelState);
         }
 
+
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -177,5 +190,63 @@ namespace MeetMe.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
+
+
+        #region JWT
+        public async Task<JWTokenModel> Token(User user)
+        {
+            var identity = GetIdentity(user);
+            if (identity == null)
+            {
+                Response.StatusCode = 400;
+                await Response.WriteAsync("Invalid username or password.");
+                return null;
+            }
+
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new JWTokenModel
+            {
+                access_token = encodedJwt,
+                username = identity.Name
+            };
+
+            // сериализация ответа
+            //Response.ContentType = "application/json";
+            //await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+            return response;
+        }
+
+        private ClaimsIdentity GetIdentity(User user)
+        {
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            // если пользователя не найдено
+            return null;
+        }
+        #endregion
+
+
+
     }
+
 }
