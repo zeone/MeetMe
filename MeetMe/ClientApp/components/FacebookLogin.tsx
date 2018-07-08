@@ -48,6 +48,8 @@ const responseFacebook = (response: any) => {
                 let token: jwToken;
                 resp.json().then(json => {
                     token = json as jwToken;
+                    localStorage.setItem('user', JSON.stringify(token))
+
                     console.log(token);
                 });
             }

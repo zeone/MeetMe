@@ -9,6 +9,7 @@ using DbRepository.Factories;
 using DbRepository.Interfaces;
 using DbRepository.Repositories;
 using MeetMe.Helpers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -65,13 +66,19 @@ namespace MeetMe
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero
                     };
+                })
+                .AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 });
+
             // Add application services.
-            services.AddAuthentication().AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
+            //services.AddAuthentication().AddFacebook(facebookOptions =>
+            //{
+            //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+            //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            //});
 
         }
 
@@ -106,5 +113,6 @@ namespace MeetMe
                     defaults: new { controller = "Home", action = "Index" });
             });
         }
+
     }
 }

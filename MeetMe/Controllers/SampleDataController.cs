@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetMe.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {
@@ -15,7 +18,7 @@ namespace MeetMe.Controllers
         };
 
         [HttpGet("[action]")]
-        public  IActionResult WeatherForecasts()
+        public IActionResult WeatherForecasts()
         {
             var rng = new Random();
             return Ok(Enumerable.Range(1, 5).Select(index => new WeatherForecast

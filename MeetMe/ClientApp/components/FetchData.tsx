@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import 'isomorphic-fetch';
+import { authHeader } from '../helpers/authHeader';
 
 interface FetchDataExampleState {
     forecasts: WeatherForecast[];
@@ -11,8 +12,11 @@ export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDat
     constructor() {
         super();
         this.state = { forecasts: [], loading: true };
-
-        fetch('api/SampleData/WeatherForecasts')
+        const requestOptions = {
+            method: 'GET',
+            headers: authHeader()
+        };
+        fetch('api/SampleData/WeatherForecasts', requestOptions)
             .then(response => {
                 let t = response.json() as Promise<WeatherForecast[]>;
                 console.log(t);
