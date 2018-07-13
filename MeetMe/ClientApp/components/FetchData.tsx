@@ -12,10 +12,12 @@ export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDat
     constructor() {
         super();
         this.state = { forecasts: [], loading: true };
-        const requestOptions = {
-            method: 'GET',
-            headers: authHeader()
+
+        let requestOptions: RequestInit;
+        requestOptions = {
+            method: 'GET'
         };
+        authHeader(requestOptions);
         fetch('api/SampleData/WeatherForecasts', requestOptions)
             .then(response => {
                 let t = response.json() as Promise<WeatherForecast[]>;

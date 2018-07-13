@@ -5,27 +5,32 @@ import { RouteComponentProps } from 'react-router';
 
 
 const registerUser = (response: any, info: any) => {
-    fetch('api/Account/ExternalLoginConfirmation', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            "CustomUserInfo": {
-                "email": response.email,
-                "facebookId": response.userID,
-                "userLogo": response.picture.data.url
+    fetch('api/Account/RegisterFBUser',
+        {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
             },
-            "SysUserInfo": info
-        }),
-    }).then((resp) => {
-        let t = resp;
-    }).then((respjson) => {
-        let r = respjson;
-    }).catch((er) => {
-        let e = er;
-    });
+            body: JSON.stringify({
+                "CustomUserInfo": {
+                    "email": response.email,
+                    "facebookId": response.userID,
+                    "userLogo": response.picture.data.url
+                },
+                "SysUserInfo": info
+            }),
+        }).then((resp) => {
+            if (resp && resp.status === 200) {
+                let token: jwToken;
+                resp.json().then(json => {
+                    token = json as jwToken;
+                    localStorage.setItem('user', JSON.stringify(token));
+                });
+            } else {
+                console.log("error");
+            }
+        });
 }
 const responseFacebook = (response: any) => {
     let info = {
@@ -35,7 +40,7 @@ const responseFacebook = (response: any) => {
             "email": response.email
         }
     };
-    fetch('api/Account/ExternalLoginCallback',
+    fetch('api/Account/GetToken',
         {
             method: 'POST',
             headers: {
@@ -48,9 +53,7 @@ const responseFacebook = (response: any) => {
                 let token: jwToken;
                 resp.json().then(json => {
                     token = json as jwToken;
-                    localStorage.setItem('user', JSON.stringify(token))
-
-                    console.log(token);
+                    localStorage.setItem('user', JSON.stringify(token));
                 });
             }
             else if (resp && resp.status === 401) {
@@ -63,26 +66,6 @@ const responseFacebook = (response: any) => {
         });
 }
 
-const prepareBaseSettings = () => {
-    //fetch('api/Account/ExternalLogin', {
-    //    method: 'POST',
-    //    headers: {
-    //        Accept: 'application/json',
-    //        'Content-Type': 'application/json',
-    //    },
-    //    body: JSON.stringify({
-    //        provider: 'Facebook',
-    //        returnUrl: ''
-    //    }),
-    //}).then((resp) => {
-    //    let t = resp;
-    //}).then((respjson) => {
-    //    let r = respjson;
-    //}).catch((er) => {
-    //    let e = er;
-    //});
-
-}
 export class FacebookLoginComp extends React.Component<RouteComponentProps<{}>, {}> {
 
     constructor() {
@@ -91,22 +74,12 @@ export class FacebookLoginComp extends React.Component<RouteComponentProps<{}>, 
 
 
 
-
-
-
-    //responseFacebook(response) {
-    //    console.log(response);
-    //    //anything else you want to do(save to localStorage)...
-    //}
-
-
     render() {
         return <div>
             <FacebookLogin
                 appId="385773281937432"
                 autoLoad={true}
                 fields="name,email,picture"
-                onClick={prepareBaseSettings}
                 callback={responseFacebook}>
             </FacebookLogin>
         </div>;

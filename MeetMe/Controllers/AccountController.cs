@@ -124,7 +124,7 @@ namespace MeetMe.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback([FromBody]ExternalLoginInfo info)
+        public async Task<IActionResult> GetToken([FromBody]ExternalLoginInfo info)
         {
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
@@ -155,7 +155,7 @@ namespace MeetMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         //   [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation([FromBody]RegisterUserModelDto model)
+        public async Task<IActionResult> RegisterFBUser([FromBody]RegisterUserModelDto model)
         {
             if (ModelState.IsValid)
             {

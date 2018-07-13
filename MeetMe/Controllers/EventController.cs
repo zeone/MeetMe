@@ -30,7 +30,7 @@ namespace MeetMe.Controllers
         [HttpGet("{id}", Name = "Get")]
         public string Get(int id)
         {
-            return "value";
+            return "str;";
         }
 
         // POST: api/Event
