@@ -9,8 +9,8 @@ interface FetchDataExampleState {
 }
 
 export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDataExampleState> {
-    constructor() {
-        super();
+    constructor(prop: any) {
+        super(prop);
         this.state = { forecasts: [], loading: true };
 
         let requestOptions: RequestInit;
@@ -37,7 +37,7 @@ export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDat
         return <div>
             <h1>Weather forecast</h1>
             <p>This component demonstrates fetching data from the server.</p>
-            { contents }
+            {contents}
         </div>;
     }
 
@@ -52,14 +52,14 @@ export class FetchData extends React.Component<RouteComponentProps<{}>, FetchDat
                 </tr>
             </thead>
             <tbody>
-            {forecasts.map(forecast =>
-                <tr key={ forecast.dateFormatted }>
-                    <td>{ forecast.dateFormatted }</td>
-                    <td>{ forecast.temperatureC }</td>
-                    <td>{ forecast.temperatureF }</td>
-                    <td>{ forecast.summary }</td>
-                </tr>
-            )}
+                {forecasts.map(forecast =>
+                    <tr key={forecast.dateFormatted}>
+                        <td>{forecast.dateFormatted}</td>
+                        <td>{forecast.temperatureC}</td>
+                        <td>{forecast.temperatureF}</td>
+                        <td>{forecast.summary}</td>
+                    </tr>
+                )}
             </tbody>
         </table>;
     }

@@ -94,11 +94,7 @@ namespace MeetMe.Controllers
             await _signInManager.SignOutAsync();
             return Ok();
         }
-        [HttpGet]
-        public IActionResult test()
-        {
-            return Ok("teststr");
-        }
+      
         /// <summary>
         /// prepare login via facebook etc
         /// </summary>
@@ -111,7 +107,7 @@ namespace MeetMe.Controllers
         public IActionResult ExternalLogin([FromBody]ExternalLoginModel model)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { model.ReturnUrl });
+            var redirectUrl = Url.Action(nameof(RegisterFBUser), "Account", new { model.ReturnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(model.Provider, redirectUrl);
             return Challenge(properties, model.Provider);
         }

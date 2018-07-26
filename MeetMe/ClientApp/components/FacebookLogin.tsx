@@ -68,8 +68,8 @@ const responseFacebook = (response: any) => {
 
 export class FacebookLoginComp extends React.Component<RouteComponentProps<{}>, {}> {
 
-    constructor() {
-        super();
+    constructor(prop: any) {
+        super(prop);
     }
 
 
