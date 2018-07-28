@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\components\Event.tsx" />
     <None Remove="ClientApp\helpers\authHeader.ts" />
   </ItemGroup>
 
@@ -36,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\Event.tsx" />
     <TypeScriptCompile Include="ClientApp\helpers\authHeader.ts" />
   </ItemGroup>
 

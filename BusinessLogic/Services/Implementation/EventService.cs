@@ -13,10 +13,10 @@ namespace BusinessLogic.Services.Implementation
 {
     public class EventService : IEventService
     {
-        private IEventRepository _eventRepository;
-        IMapper _mapper;
-
-        public EventService(IEventRepository eRep, IMapper mapper)
+        private readonly IEventRepository _eventRepository;
+        readonly IMapper _mapper;
+        private readonly IWorkingContext workingContext;
+        public EventService(IEventRepository eRep, IMapper mapper, IWorkingContext workingContext)
         {
             _eventRepository = eRep;
             _mapper = mapper;
@@ -28,14 +28,25 @@ namespace BusinessLogic.Services.Implementation
             return resp;
         }
 
-        public Task<Event> GetEvent(int postId)
+        public async Task<Event> GetEvent(int postId)
         {
-            throw new NotImplementedException();
+            return await _eventRepository.GetEvent(postId);
         }
 
-        public Task AddEvent(Event post)
+        public async Task<Event> AddEvent(Event post)
         {
-            throw new NotImplementedException();
+            post.Creator = workingContext.CurrentUser;
+            return await _eventRepository.AddEvent(post);
+        }
+
+        public async Task<Event> UpdateEvent(Event evnt)
+        {
+            return await _eventRepository.UpdateEvent(evnt);
+        }
+
+        public async Task DeleteEvent(int id)
+        {
+            await _eventRepository.DeleteEvent(id);
         }
     }
 }

@@ -37,6 +37,11 @@ export class NavMenu extends React.Component<{}, {}> {
                                 <span className='glyphicon glyphicon-th-list'></span> Facebook Login
                         </NavLink>
                         </li>
+                        <li>
+                            <NavLink to={'/event'} activeClassName='active'>
+                                <span className='glyphicon glyphicon-th-list'></span> Event API
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
             </div>

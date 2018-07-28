@@ -30,14 +30,58 @@ namespace DbRepository.Repositories
 
         public async Task<Event> GetEvent(int postId)
         {
-            throw new NotImplementedException();
+            using (var context = ContextFactory.CreateDbContext(ConnectionString))
+            {
+                return await context.Events.FindAsync(postId);
+            }
         }
 
 
 
-        public async Task AddEvent(Event post)
+        public async Task<Event> AddEvent(Event post)
         {
-            throw new NotImplementedException();
+            using (var context = ContextFactory.CreateDbContext(ConnectionString))
+            {
+                try
+                {
+                    await context.Events.AddAsync(post);
+                    await context.SaveChangesAsync();
+                    return post;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+
+            }
+        }
+
+        public async Task<Event> UpdateEvent(Event evnt)
+        {
+            using (var context = ContextFactory.CreateDbContext(ConnectionString))
+            {
+                try
+                {
+                    context.Events.Update(evnt);
+                    await context.SaveChangesAsync();
+                    return evnt;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+
+            }
+        }
+
+        public async Task DeleteEvent(int id)
+        {
+            using (var context = ContextFactory.CreateDbContext(ConnectionString))
+            {
+                var envnt = await context.Events.FindAsync(id);
+                context.Events.Remove(envnt);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

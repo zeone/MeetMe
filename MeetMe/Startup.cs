@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic;
 using BusinessLogic.Services.Implementation;
 using BusinessLogic.Services.Interfaces;
 using DbRepository;
@@ -13,11 +14,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 
@@ -45,7 +48,8 @@ namespace MeetMe
             services.AddScoped<IUserRepository>(prov =>
                 new UserRepository(dbConStr, prov.GetService<IRepositoryContextFactory>()));
             services.AddScoped<IEventService, EventService>();
-
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IWorkingContext, WorkingContext>();
             //autorization
             services.AddDbContext<RepositoryContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
