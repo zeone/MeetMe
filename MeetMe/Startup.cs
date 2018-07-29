@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BusinessLogic;
 using BusinessLogic.Services.Implementation;
 using BusinessLogic.Services.Interfaces;
@@ -41,7 +42,7 @@ namespace MeetMe
             string dbConStr = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddMvc();
-
+            services.AddAutoMapper();
             services.AddScoped<IRepositoryContextFactory, RepositoryContextFactory>();
             services.AddScoped<IEventRepository>(prov =>
                 new EventRepository(dbConStr, prov.GetService<IRepositoryContextFactory>()));

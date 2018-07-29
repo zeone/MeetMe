@@ -22,9 +22,9 @@ namespace MeetMe.Controllers
         {
             _eventService = _eService;
         }
-        // GET: api/Event
+        // GET: api/Events
         [HttpGet("[action]")]
-        public async Task<List<EventViewDto>> GetAll(int index, int pageSize)
+        public async Task<List<EventViewDto>> Events([FromQuery]int index, [FromQuery] int pageSize)
         {
             return await _eventService.GetEvents(index, pageSize);
         }
