@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic;
 using BusinessLogic.DTO.Events;
 using BusinessLogic.Services.Interfaces;
+using MeetMe.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -18,13 +21,18 @@ namespace MeetMe.Controllers
     public class EventController : Controller
     {
         private IEventService _eventService;
-        public EventController(IEventService _eService)
+        private IWorkingContext workingContext;
+
+        private readonly UserManager<User> _userManager;
+        public EventController(IEventService _eService, IWorkingContext workingContext, UserManager<User> userManager)
         {
             _eventService = _eService;
+            _userManager = userManager;
+            this.workingContext = workingContext;
         }
         // GET: api/Events
         [HttpGet("[action]")]
-        public async Task<List<EventViewDto>> Events([FromQuery]int index, [FromQuery] int pageSize)
+        public async Task<ActionResult<List<EventViewDto>>> Events([FromQuery]int index, [FromQuery] int pageSize)
         {
             return await _eventService.GetEvents(index, pageSize);
         }
@@ -40,6 +48,10 @@ namespace MeetMe.Controllers
         [HttpPost]
         public async Task<Event> Post(Event evnt)
         {
+            var userId = HttpContext.User.GetUserName();
+           // var user = _userManager.
+           evnt.Creator= await _userManager.FindByNameAsync(HttpContext.User.GetUserName());
+            evnt.CreationDate = DateTime.Now;
             return await _eventService.AddEvent(evnt);
         }
 

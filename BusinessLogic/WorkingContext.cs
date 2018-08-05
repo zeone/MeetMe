@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Web;
+using Microsoft.AspNetCore.Identity;
+using BusinessLogic.Extensions;
 using Models;
 
 namespace BusinessLogic
@@ -16,13 +19,6 @@ namespace BusinessLogic
         }
         public HttpContext HttpContext => httpContextAccessor.HttpContext;
 
-        public User CurrentUser
-        {
-            get
-            {
-                User user = HttpContext?.User.Identity as User;
-                return user;
-            }
-        }
+        public User CurrentUser => HttpContext?.User.Identity as User;
     }
 }

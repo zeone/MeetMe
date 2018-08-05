@@ -35,7 +35,7 @@ namespace BusinessLogic.Services.Implementation
 
         public async Task<Event> AddEvent(Event post)
         {
-            post.Creator = workingContext.CurrentUser;
+          //  post.Creator = await workingContext.CurrentUser;
             return await _eventRepository.AddEvent(post);
         }
 

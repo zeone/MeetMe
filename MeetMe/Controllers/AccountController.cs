@@ -123,11 +123,11 @@ namespace MeetMe.Controllers
         public async Task<IActionResult> GetToken([FromBody]ExternalLoginInfo info)
         {
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                await _signInManager.SignInAsync(user, false);
+                await _signInManager.SignInAsync(user, true);
                 return Ok(await Token(user));
             }
             if (result.IsLockedOut)
