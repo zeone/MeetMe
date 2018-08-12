@@ -9,10 +9,11 @@ namespace Models
     {
         [Key]
         public int EventId { get; set; }
-        public User Creator { get; set; }
+        public Guid? CreatorId { get; set; }
         /// <summary>
         /// User's entered place
         /// </summary>
+        public virtual User Creator { get; set; }
         public string Place { get; set; }
         public float? Longitude { get; set; }
         public float? Lattitude { get; set; }

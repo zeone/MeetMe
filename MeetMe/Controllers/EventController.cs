@@ -46,18 +46,21 @@ namespace MeetMe.Controllers
 
         // POST: api/Event
         [HttpPost]
-        public async Task<Event> Post(Event evnt)
+        public async Task<Event> Post([FromBody]Event evnt)
         {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.IsValid.ToString());
             var userId = HttpContext.User.GetUserName();
-           // var user = _userManager.
-           evnt.Creator= await _userManager.FindByNameAsync(HttpContext.User.GetUserName());
+            // var user = _userManager.
+            var creator = await _userManager.FindByNameAsync(HttpContext.User.GetUserName());
+            evnt.CreatorId = creator.Id;
             evnt.CreationDate = DateTime.Now;
             return await _eventService.AddEvent(evnt);
         }
 
         // PUT: api/Event/5
         [HttpPut]
-        public async Task<Event> Put(Event evnt)
+        public async Task<Event> Put([FromBody]Event evnt)
         {
             return await _eventService.UpdateEvent(evnt);
         }

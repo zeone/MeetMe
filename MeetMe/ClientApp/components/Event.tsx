@@ -12,7 +12,10 @@ interface EnevtApiState {
     eventIndex: string;
     pageSize: string;
     crEvent: any;
-    crRespEvent:any;
+    crRespEvent: any;
+    updEvent: any;
+    updRespEvent: any;
+    deleteEvent: any;
 }
 
 export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiState> {
@@ -33,12 +36,14 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
                 description: "firste event",
                 preferredGender: 0,
                 creationDate: "2018-08-05T17:54:48.8634302"
-
             },
             crRespEvent: {},
             events: [null],
-            eventIndex: "1",
-            pageSize: "10"
+            eventIndex: "0",
+            pageSize: "10",
+            updEvent: {},
+            updRespEvent: {},
+            deleteEvent: {}
         }
         this.loadEvent = this.loadEvent.bind(this);
         this.changeEventId = this.changeEventId.bind(this);
@@ -47,9 +52,13 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
         this.changePageSize = this.changePageSize.bind(this);
         this.createEventResp = this.createEventResp.bind(this);
         this.changeCrEventModel = this.changeCrEventModel.bind(this);
+        this.updateEventResp = this.updateEventResp.bind(this);
+        this.changeUpdEventModel = this.changeUpdEventModel.bind(this);
+        this.deleteEvent = this.deleteEvent.bind(this);
+        this.deleteEventReq = this.deleteEventReq.bind(this);
     }
 
-    loadEvent() {
+    loadEvent(forUpdate: boolean = false) {
         let requestOptions: RequestInit = {
             method: 'GET'
 
@@ -69,7 +78,10 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
                     console.log(err);
                 })
             .then(data => {
-                this.setState(prevState => ({ event: data }));
+                if (forUpdate)
+                    this.setState(prevState => ({ updEvent: data }));
+                else
+                    this.setState(prevState => ({ event: data }));
 
             });
     }
@@ -100,7 +112,12 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
     }
 
     createEventResp() {
+        let headers: Headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+
         let requestOptions: RequestInit = {
+            headers: headers,
             method: 'POST',
             body: JSON.stringify(this.state.crEvent)
         };
@@ -124,12 +141,62 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
             });
     }
 
+    updateEventResp() {
+        let headers: Headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+
+        let requestOptions: RequestInit = {
+            headers: headers,
+            method: 'PUT',
+            body: JSON.stringify(this.state.updEvent)
+        };
+        authHeader(requestOptions);
+        fetch('api/event/', requestOptions)
+            .then(response => {
+                if (response.status === 200) {
+                    let t = response.json();
+                    return t;
+                } else {
+                    return badResponse(response);
+                }
+
+            },
+                err => {
+                    console.log(err);
+                })
+            .then(data => {
+                this.setState(prevState => ({ updRespEvent: data }));
+
+            });
+    }
+
+    deleteEventReq() {
+        let requestOptions: RequestInit = {
+            method: 'DELETE'
+
+        };
+        authHeader(requestOptions);
+        fetch('api/Event/' + this.state.eventId, requestOptions)
+            .then(response => {
+                return badResponse(response);
+            },
+                err => {
+                    console.log(err);
+                })
+            .then(data => {
+                this.setState(prevState => ({ deleteEvent: data }));
+
+            });
+    }
 
     public render() {
 
         let getEvent = this.getEvetById(this.state.event);
         let getAllEvents = this.getEvents(this.state.events);
-        let createEvent = this.createEvent(this.state.crEvent,this.state.crRespEvent);
+        let createEvent = this.createEvent(this.state.crEvent, this.state.crRespEvent);
+        let updateEvent = this.updateEvent(this.state.updRespEvent);
+        let deleteEvent = this.deleteEvent();
         return <div>
             <br />
             {getEvent}
@@ -137,6 +204,10 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
             {getAllEvents}
             <br />
             {createEvent}
+            <br />
+            {updateEvent}
+            <br />
+            {deleteEvent}
         </div>;
     }
 
@@ -152,7 +223,7 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
                 type="text"
                 value={this.state.eventId}
                 onChange={this.changeEventId} />
-            <button onClick={this.loadEvent} >
+            <button onClick={() => { this.loadEvent() }} >
                 Get event
             </button>
             <br />
@@ -203,7 +274,7 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
         return <div>
             <p>Create event</p>
             <ReactJson src={this.state.crEvent} onEdit={this.changeCrEventModel} theme="monokai" />
-            <span>/api/Event/</span>
+            <span>Type POST</span> <span>/api/Event/</span>
 
             <button onClick={this.createEventResp} >
                 Create Event
@@ -211,6 +282,49 @@ export class Event extends React.Component<RouteComponentProps<{}>, EnevtApiStat
             <br />
             <ReactJson src={resp} theme="monokai" />
         </div>;
+    }
+
+    //update Event
+    changeUpdEventModel(edit: any) {
+        this.setState(prevState => ({ updEvent: edit.updated_src }));
+    }
+    private updateEvent(resp: any) {
+        return <div>
+            <p>Update event</p>
+            Put Event Id for update it  <input
+                type="text"
+                value={this.state.eventId}
+                onChange={this.changeEventId} />
+            <button onClick={() => { this.loadEvent(true) }} >
+                Get event
+                   </button>
+
+            <ReactJson src={this.state.updEvent} onEdit={this.changeUpdEventModel} theme="monokai" />
+            <span>Type PUT</span> <span>/api/Event/</span>
+
+            <button onClick={this.updateEventResp} >
+                Update Event
+                   </button>
+            <br />
+            <ReactJson src={resp} theme="monokai" />
+        </div>;
+    }
+
+    //delete event
+    
+    private deleteEvent() {
+        return <div>
+                   <p>Delete event</p>
+                   <span>Type DELETE</span>  <span>/api/Event/</span>  <input
+                                                 type="text"
+                                                 value={this.state.eventId}
+                                                 onChange={this.changeEventId} />
+            <button onClick={this.deleteEventReq} >
+                       Delete Event
+                   </button>
+                   <br />
+            <ReactJson src={this.state.deleteEvent} theme="monokai" />
+               </div>;
     }
 }
 

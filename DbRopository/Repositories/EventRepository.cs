@@ -46,6 +46,7 @@ namespace DbRepository.Repositories
                 {
                     await context.Events.AddAsync(post);
                     await context.SaveChangesAsync();
+                     post.Creator = context.Users.Find(post.CreatorId);
                     return post;
                 }
                 catch (Exception e)
