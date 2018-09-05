@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /MeetMe/wwwroot/dist/
 /MeetMe/appsettings.json
+/MeetMe/wwwroot/dist/
