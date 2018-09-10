@@ -3,7 +3,7 @@ import {View, Text, Image, Alert, Platform} from 'react-native';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
 
-const Header = () => {
+const Header = ({onFiltersClick}) => {
     return (
         <View style={styles.containerStyle}>
             <View style={styles.leftContainerStyle}>
@@ -13,7 +13,7 @@ const Header = () => {
             </View>
             <Text style={styles.textStyle}>Meet Me</Text>
             <View style={styles.rightContainerStyle}>
-                <Button style={styles.buttonStyle} onPress={()=>{Alert.alert('Filters Button pressed')}}>
+                <Button style={styles.buttonStyle} onPress={onFiltersClick}>
                     <Icon name="HeaderFiltersIcon" width="16" height="16"/>
                 </Button>
             </View>
