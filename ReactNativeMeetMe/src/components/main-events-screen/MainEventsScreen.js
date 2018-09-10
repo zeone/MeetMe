@@ -11,9 +11,10 @@ class MainEventsScreen extends Component {
 
     fetchEvents = () => {
         console.log(111);
-        axios.get('http://127.0.0.1/api/event/Events?index=1&pageSize=10')
+        axios.get('http://192.168.1.119/api/event/Events?index=0&pageSize=10')
             .then(res => {
                 console.log(121);
+                console.log(res);
                 return res.json()
             })
             .then(res => {
