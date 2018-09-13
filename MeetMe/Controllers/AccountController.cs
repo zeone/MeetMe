@@ -228,7 +228,8 @@ namespace MeetMe.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                    new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

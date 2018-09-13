@@ -15,7 +15,8 @@ using Models;
 
 namespace MeetMe.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [AllowAnonymous]
     [Produces("application/json")]
     [Route("api/Event")]
     public class EventController : Controller
@@ -45,6 +46,7 @@ namespace MeetMe.Controllers
         }
 
         // POST: api/Event
+ 
         [HttpPost]
         public async Task<Event> Post([FromBody]Event evnt)
         {
@@ -52,9 +54,20 @@ namespace MeetMe.Controllers
                 throw new Exception(ModelState.IsValid.ToString());
             var userId = HttpContext.User.GetUserName();
             // var user = _userManager.
-            var creator = await _userManager.FindByNameAsync(HttpContext.User.GetUserName());
-            evnt.CreatorId = creator.Id;
-            evnt.CreationDate = DateTime.Now;
+
+            try
+            {
+                var creator = await _userManager.FindByNameAsync(HttpContext.User.GetUserName());
+                evnt.CreatorId = creator.Id;
+                evnt.CreationDate = DateTime.Now;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+
             return await _eventService.AddEvent(evnt);
         }
 
