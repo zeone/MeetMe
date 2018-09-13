@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Alert, Platform} from 'react-native';
+import {View, Text, Alert, Platform, StatusBar} from 'react-native';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
 
@@ -23,7 +23,7 @@ const Header = () => {
 
 const styles = {
     containerStyle: {
-        paddingTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
+        paddingTop: 0/*(Platform.OS === 'ios') ? 0 : StatusBar.currentHeight*/,
         backgroundColor: '#f9f9f9',
         flexDirection: 'row',
         justifyContent: 'space-between',

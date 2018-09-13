@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image, Alert, Platform} from 'react-native';
+import {View, Text, Image, Alert, Platform, StatusBar} from 'react-native';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
 import HeaderBackBtn from '../common/HeaderBackBtn';
@@ -34,7 +34,7 @@ class Header extends Component {
 
 const styles = {
     containerStyle: {
-        paddingTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
+        paddingTop: 0/*(Platform.OS === 'ios') ? 0 : StatusBar.currentHeight*/,
         backgroundColor: '#f9f9f9',
         flexDirection: 'row',
         alignItems: 'center',

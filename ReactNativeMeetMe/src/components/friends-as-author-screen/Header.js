@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Platform} from 'react-native';
+import {View, Text, Platform, StatusBar} from 'react-native';
 import HeaderBackBtn from '../common/HeaderBackBtn';
 
 class Header extends Component {
@@ -28,7 +28,7 @@ class Header extends Component {
 
 const styles = {
     containerStyle: {
-        paddingTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
+        paddingTop: 0 /*(Platform.OS === 'ios') ? 0 : StatusBar.currentHeight*/,
         backgroundColor: '#f9f9f9',
         flexDirection: 'row',
         alignItems: 'center',

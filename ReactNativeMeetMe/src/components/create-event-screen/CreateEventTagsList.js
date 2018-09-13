@@ -4,7 +4,7 @@ import { View, ScrollView } from 'react-native';
 const СreateEventsTagsList = () => {
     return (
         <View>
-            <ScrollView>
+            <ScrollView horizontal={true}>
 
             </ScrollView>
         </View>

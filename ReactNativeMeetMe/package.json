@@ -1,35 +1,32 @@
 {
-  "name": "AwesomeProject",
-  "version": "0.1.0",
+  "name": "ReactNativeMeetMe",
+  "version": "0.0.1",
   "private": true,
-  "devDependencies": {
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.13",
-    "jest-expo": "~27.0.0",
-    "react-native-scripts": "1.14.0",
-    "react-test-renderer": "16.3.1"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
-  },
-  "jest": {
-    "preset": "jest-expo"
   },
   "dependencies": {
     "@dwqs/react-native-image-viewer": "^2.0.0",
     "axios": "^0.18.0",
-    "expo": "^27.0.1",
-    "react": "16.3.1",
-    "react-native": "~0.55.2",
+    "react": "16.5.0",
+    "react-native": "0.57.0",
+    "react-native-google-place-picker": "^1.2.1",
     "react-native-svg": "^6.3.1",
     "react-native-svg-icon": "^0.8.1",
-    "react-navigation": "^2.3.1",
+    "react-navigation": "^2.12.1",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "tcomb-form-native": "^0.6.16"
+  },
+  "devDependencies": {
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "0.45.1",
+    "react-test-renderer": "16.5.0"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }

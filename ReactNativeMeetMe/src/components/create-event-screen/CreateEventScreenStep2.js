@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import CreateEventForm from './CreateEventForm';
 import Header from './HeaderStep2';
 
 class CreateEventScreenStep2 extends Component {
@@ -11,6 +12,9 @@ class CreateEventScreenStep2 extends Component {
         return (
             <View style={styles.containerStyle}>
                 <Header navigation={this.props.navigation}/>
+                <ScrollView>
+                    <CreateEventForm />
+                </ScrollView>
             </View>
         );
     }
