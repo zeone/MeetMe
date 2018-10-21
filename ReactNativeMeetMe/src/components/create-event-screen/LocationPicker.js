@@ -4,14 +4,19 @@ import Button from '../common/Button';
 
 const LocationPicker = ({locationString, onSelectLocation}) => {
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.text}>Укажите желаемое место встречи:</Text>
-            <Button styles={styles.locationPicker} onPress={onSelectLocation}>{locationString}</Button> 
+            <Button styles={styles.locationPicker} onPress={onSelectLocation}>
+                <Text>{locationString}</Text>
+            </Button> 
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     locationPicker: {
         height: 40,
         marginBottom: 20,
